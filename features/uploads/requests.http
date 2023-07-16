@@ -1,0 +1,8 @@
+### Get user's upload requests
+
+< {%
+    request.variables.set("userId", "1")
+%}
+
+GET localhost:8080/api/v1/users/{{userId}}/upload/requests
+
