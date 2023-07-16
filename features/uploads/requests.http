@@ -1,8 +1,9 @@
 ### Get user's upload requests
 
-< {%
-    request.variables.set("userId", "1")
-%}
+GET {{host}}/api/v1/users/{{userId}}/upload/requests
 
-GET localhost:8080/api/v1/users/{{userId}}/upload/requests
+### Create user's upload requests
 
+POST {{host}}/api/v1/users/{{userId}}/upload/requests
+
+["img.png", "video.mp4"]
