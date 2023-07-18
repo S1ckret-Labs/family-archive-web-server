@@ -13,6 +13,7 @@ import (
 	ginadapter "github.com/awslabs/aws-lambda-go-api-proxy/gin"
 	"github.com/gin-gonic/gin"
 	_ "github.com/go-sql-driver/mysql"
+	cors "github.com/rs/cors/wrapper/gin"
 	"github.com/spf13/viper"
 	"os"
 )
@@ -49,6 +50,11 @@ func loadConfig() *viper.Viper {
 func setupRouter() *gin.Engine {
 	r := gin.Default()
 	r.Use(helpers.ErrorHandler())
+
+	r.Use(cors.New(cors.Options{
+		AllowedOrigins: []string{"http://localhost:5173/"},
+	}))
+
 	r.GET("/health", health.GetHealth)
 	return r
 }
