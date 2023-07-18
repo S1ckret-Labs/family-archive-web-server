@@ -6,12 +6,12 @@ import (
 )
 
 type UploadFile struct {
-	ObjectId   int64
+	ObjectId   uint64
 	ObjectKey  string
 	StatusName string
 }
 
-func FindUploadRequests(db *sql.DB, userId int64) ([]UploadFile, error) {
+func FindUploadRequests(db *sql.DB, userId uint64) ([]UploadFile, error) {
 	const selectUploadFilesForUser = `select o.request_id, o.object_key, s.status_name from UploadRequests as o 
 								  join UploadRequestStatuses as s using (status_id) 
    								  where user_id = ?;`
@@ -33,10 +33,10 @@ func FindUploadRequests(db *sql.DB, userId int64) ([]UploadFile, error) {
 	return result, nil
 }
 
-func InsertUploadRequests(db *sql.DB, userId int64, fileNames []string) ([]int64, error) {
+func InsertUploadRequests(db *sql.DB, userId uint64, fileNames []string) ([]uint64, error) {
 	const pendingUploadStatusId = 1
 	const sqlStr = `INSERT INTO UploadRequests (user_id, status_id, object_key) VALUES (?, ?, ?)`
-	var ids = make([]int64, 0)
+	var ids = make([]uint64, 0)
 
 	tx, err := db.Begin()
 	if err != nil {
@@ -56,7 +56,7 @@ func InsertUploadRequests(db *sql.DB, userId int64, fileNames []string) ([]int64
 			log.Panicln(err)
 			return nil, err
 		}
-		ids = append(ids, id)
+		ids = append(ids, uint64(id))
 	}
 	if err := tx.Commit(); err != nil {
 		log.Panicln(err)
