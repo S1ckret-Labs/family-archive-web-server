@@ -19,13 +19,13 @@ type Feature struct {
 }
 
 type CreateUploadRequestResult struct {
-	ObjectId  int64
+	ObjectId  uint64
 	ObjectKey string
 	UploadUrl string
 }
 
 func (f Feature) GetUploadRequests(c *gin.Context) {
-	userId, err := helpers.ParamInt64(c, "id")
+	userId, err := helpers.ParamUint64(c, "id")
 	if err != nil {
 		c.AbortWithError(http.StatusBadRequest, err)
 		return
@@ -40,7 +40,7 @@ func (f Feature) GetUploadRequests(c *gin.Context) {
 }
 
 func (f Feature) CreateUploadRequests(c *gin.Context) {
-	userId, err := helpers.ParamInt64(c, "id")
+	userId, err := helpers.ParamUint64(c, "id")
 	if err != nil {
 		c.AbortWithError(http.StatusBadRequest, err)
 		return
@@ -54,7 +54,7 @@ func (f Feature) CreateUploadRequests(c *gin.Context) {
 		return
 	}
 
-	urls, err := f.createS3SignedUrls(strconv.FormatInt(userId, 10)+"/", fileNames)
+	urls, err := f.createS3SignedUrls(strconv.FormatUint(userId, 10)+"/", fileNames)
 	if err != nil {
 		log.Println("Error while creating S3 signed URLs!")
 		c.AbortWithError(http.StatusInternalServerError, err)
@@ -72,7 +72,7 @@ func (f Feature) CreateUploadRequests(c *gin.Context) {
 	c.JSON(http.StatusOK, results)
 }
 
-func composeCreateUploadRequestResults(ids []int64, keys []string, urls []string) []CreateUploadRequestResult {
+func composeCreateUploadRequestResults(ids []uint64, keys []string, urls []string) []CreateUploadRequestResult {
 	if len(ids) != len(keys) || len(keys) != len(urls) {
 		log.Panicf("Can't compose final result. Array sizes doesn't match! %d, %d, %d\n", len(ids), len(keys), len(urls))
 	}
