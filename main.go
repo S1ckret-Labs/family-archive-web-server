@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"github.com/S1ckret-Labs/family-archive-web-server/features/health"
+	"github.com/S1ckret-Labs/family-archive-web-server/features/tree"
 	"github.com/S1ckret-Labs/family-archive-web-server/features/uploads"
 	"github.com/S1ckret-Labs/family-archive-web-server/helpers"
 	"github.com/aws/aws-lambda-go/events"
@@ -32,11 +33,13 @@ func main() {
 	s3Client := s3.New(awsSession)
 
 	uploadsFeature := uploads.Feature{Db: db, S3: s3Client, BucketName: bucketName}
+	treeFeature := tree.Feature{Db: db}
 
 	r := setupRouter()
 	r.GET("/api/v1/users/:id/upload/requests", uploadsFeature.GetUploadRequests)
 	r.POST("/api/v1/users/:id/upload/requests", uploadsFeature.CreateUploadRequests)
 
+	r.GET("/api/v1/users/:id/tree", treeFeature.GetTree)
 	Run(r)
 }
 

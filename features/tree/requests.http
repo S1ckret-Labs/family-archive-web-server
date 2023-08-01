@@ -1,0 +1,11 @@
+### Get user's object tree for root object with depth = 1 (default)
+
+GET {{host}}/api/v1/users/{{userId}}/tree
+
+### Get user's object tree for root object with depth = 3
+
+GET {{host}}/api/v1/users/{{userId}}/tree?depth=3
+
+### Get user's object tree for a particular object with depth = 1 (default)
+
+GET {{host}}/api/v1/users/{{userId}}/tree?root_object_id=27
