@@ -17,3 +17,16 @@ func ParamUint64(c *gin.Context, name string) (uint64, error) {
 	}
 	return i, nil
 }
+
+func QueryOptionalUint64(c *gin.Context, name string) (uint64, bool, error) {
+	param, present := c.GetQuery(name)
+	if present {
+		i, err := strconv.ParseUint(param, 10, 64)
+		if err != nil {
+			return 0, present, fmt.Errorf("query parameter '%s' must be an unsigned integer", name)
+		}
+		return i, present, nil
+
+	}
+	return 0, present, nil
+}
