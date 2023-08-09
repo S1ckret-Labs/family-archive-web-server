@@ -10,6 +10,7 @@ require (
 	github.com/go-sql-driver/mysql v1.7.1
 	github.com/rs/cors/wrapper/gin v0.0.0-20230526135330-e90f16747950
 	github.com/spf13/viper v1.16.0
+	gopkg.in/guregu/null.v4 v4.0.0
 )
 
 require (
