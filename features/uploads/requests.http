@@ -6,4 +6,25 @@ GET {{host}}/api/v1/users/{{userId}}/upload/requests
 
 POST {{host}}/api/v1/users/{{userId}}/upload/requests
 
-["img.png", "video.mp4"]
+[
+ {
+  "ObjectKey": "db.go.jpg",
+  "SizeBytes": 155412,
+  "TakenAtSec": null
+ },
+ {
+  "ObjectKey": "nice-cat.png",
+  "SizeBytes": 155412,
+  "TakenAtSec": 1691566015
+ }
+]
+
+###
+
+PUT https://fa-media-raw.s3.amazonaws.com/1/db.go.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=ASIAXHT5DCEVII3ADKYO%2F20230723%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20230723T125813Z&X-Amz-Expires=600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEGUaCXVzLWVhc3QtMSJIMEYCIQC1CsoCkvlbbxa%2FbNjjRaZPfP5uXD1bBQK%2FLRI0uODcLgIhAI0LSrbB6RObfI6Kenobo8%2BOsz53cZMkm7xweJNQq7osKusCCO7%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQAhoMNDk3NDA0ODA5NTE0IgxAzZPXuYhOBJxxlqUqvwJ8HceZ39stQlvY4MHBlmczYrPtqVAbIMEPdOZoIMfSfaHblJBgB6NvLL8PWp1vB%2BHVZRrbmB%2BiwGz3P4oYWt98hZyFkT7QRCIDEUOXXbtfzdsG36bIr7WwT98Yz5VUeUyCWhqytB4bkcT3GLvqYFS64Gl6FuDsarhKbXg%2BUhSWnsGRsF5hNgpMM9tgAQA9HKzDpb%2BTwsdG8GdxpUGiqAwoje2Xs%2BHAWiYh1CUkSlGoXCxeqbp8kdXasniIF8Gt1Ap2EXc%2BnC7uPcS9VynO6W%2B4VczISfQ8ZavyTWTXDClNq9dizFXYUMrGk0z%2FIHiDzSuGFqAHtJEdxukiXLw0i72tHHYY1XCKjk1YVMTU9xiIA9SGRgc7WHtGvspX7Z7dmub33U0AKEqJA6iY9bPc5UUONfr4Yr7M1wZ47R46UNERMKzE9KUGOp0B3Gs%2Fx%2B6JlRJuyzYk2NqLZvEWLCxMm3%2BkdhuggS2nALh943DYt5e%2FLeT6TaPeihbBkgNhA9XXIdh1lDdYEtr8o%2BhGVsOP0nZjo4X53AlN8aWCv8WO9L2Y3MypYaG8O8v3Zyj6dMZVtEkzBlW6iP0vyylPU2WAddaTQLKU0nuhgPBNLoO1Bq5Jv9Ji%2B76d2bvFQUPK2xi5batEDMUpvw%3D%3D&X-Amz-SignedHeaders=host&X-Amz-Signature=9d3f513019ad34d0c48d430828ad176293f67de643d1d1461b3d073386340139
+Content-Type: text/plain
+
+< ./db.go
+
+###
+curl -X PUT -H 'Content-Type=text/plain' -d '@./db.go' 'https://fa-media-raw.s3.amazonaws.com/1/db.go?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAXHT5DCEVDPMKDFUL%2F20230723%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20230723T113256Z&X-Amz-Expires=600&X-Amz-SignedHeaders=host&X-Amz-Signature=d98fe83545744fa24340923470e527e7791ac5e95d7f38a0093d81e71f05e741"'

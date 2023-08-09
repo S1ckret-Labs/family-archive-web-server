@@ -6,6 +6,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/s3"
 	"github.com/gin-gonic/gin"
+	"gopkg.in/guregu/null.v4"
 	"log"
 	"net/http"
 	"strconv"
@@ -16,6 +17,12 @@ type Feature struct {
 	Db         *sql.DB
 	S3         *s3.S3
 	BucketName string
+}
+
+type CreateUploadRequest struct {
+	ObjectKey  string
+	SizeBytes  uint64
+	TakenAtSec null.Int
 }
 
 type CreateUploadRequestResult struct {
@@ -48,27 +55,32 @@ func (f Feature) CreateUploadRequests(c *gin.Context) {
 
 	// TODO: Validate if file names are not colliding (must be unique)
 	// TODO: Validate file extensions (must be acceptable)
-	var fileNames []string
-	if err := c.BindJSON(&fileNames); err != nil {
+	var uploadRequests []CreateUploadRequest
+	if err := c.BindJSON(&uploadRequests); err != nil {
 		c.AbortWithError(http.StatusBadRequest, err)
 		return
 	}
 
-	urls, err := f.createS3SignedUrls(strconv.FormatUint(userId, 10)+"/", fileNames)
+	var objectKeys []string
+	for _, request := range uploadRequests {
+		objectKeys = append(objectKeys, request.ObjectKey)
+	}
+
+	urls, err := f.createS3SignedUrls(strconv.FormatUint(userId, 10)+"/", objectKeys)
 	if err != nil {
 		log.Println("Error while creating S3 signed URLs!")
 		c.AbortWithError(http.StatusInternalServerError, err)
 		return
 	}
 
-	ids, err := InsertUploadRequests(f.Db, userId, fileNames)
+	ids, err := InsertUploadRequests(f.Db, userId, uploadRequests)
 	if err != nil {
 		log.Println("Error while inserting upload files to a database!")
 		c.AbortWithError(http.StatusInternalServerError, err)
 		return
 	}
 
-	results := composeCreateUploadRequestResults(ids, fileNames, urls)
+	results := composeCreateUploadRequestResults(ids, objectKeys, urls)
 	c.JSON(http.StatusOK, results)
 }
 
