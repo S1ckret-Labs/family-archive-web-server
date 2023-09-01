@@ -3,10 +3,8 @@ package main
 import (
 	"context"
 	"database/sql"
-	"github.com/S1ckret-Labs/family-archive-web-server/features/health"
-	"github.com/S1ckret-Labs/family-archive-web-server/features/tree"
-	"github.com/S1ckret-Labs/family-archive-web-server/features/uploads"
-	"github.com/S1ckret-Labs/family-archive-web-server/helpers"
+	"os"
+
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/aws/aws-sdk-go/aws/session"
@@ -16,12 +14,32 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 	cors "github.com/rs/cors/wrapper/gin"
 	"github.com/spf13/viper"
-	"os"
+	"github.com/swaggo/files"
+	"github.com/swaggo/gin-swagger"
+
+	"github.com/S1ckret-Labs/family-archive-web-server/docs"
+	"github.com/S1ckret-Labs/family-archive-web-server/features/health"
+	"github.com/S1ckret-Labs/family-archive-web-server/features/tree"
+	"github.com/S1ckret-Labs/family-archive-web-server/features/uploads"
+	"github.com/S1ckret-Labs/family-archive-web-server/helpers"
 )
 
 var ginLambda *ginadapter.GinLambda
 
+// @contact.name   s1ckret-labs
+// @contact.url    https://github.com/S1ckret-Labs
+// @contact.email  support@some_email.com
+
+// @securityDefinitions.basic  BasicAuth
+
+// @externalDocs.description  General Docs
+// @externalDocs.url          https://github.com/S1ckret-Labs/family-archive-docs
 func main() {
+	docs.SwaggerInfo.Title = "Family Archive API Docs"
+	docs.SwaggerInfo.Description = "Additional Info:"
+	docs.SwaggerInfo.Version = "0.0.1"
+	docs.SwaggerInfo.Schemes = []string{"http", "https"}
+
 	config := loadConfig()
 	dbConStr := config.GetString("database_connection_string")
 	bucketName := config.GetString("file_uploads_bucket_name")
@@ -36,6 +54,7 @@ func main() {
 	treeFeature := tree.Feature{Db: db}
 
 	r := setupRouter()
+	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	r.GET("/api/v1/users/:id/upload/requests", uploadsFeature.GetUploadRequests)
 	r.POST("/api/v1/users/:id/upload/requests", uploadsFeature.CreateUploadRequests)
 
@@ -62,7 +81,10 @@ func setupRouter() *gin.Engine {
 	return r
 }
 
-func Handler(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+func Handler(
+	ctx context.Context,
+	request events.APIGatewayProxyRequest,
+) (events.APIGatewayProxyResponse, error) {
 	return ginLambda.ProxyWithContext(ctx, request)
 }
 
