@@ -6,6 +6,14 @@ import (
 	"log"
 )
 
+// @Model UploadFile
+// @Description Represents an uploaded file's information
+// @ID upload-file
+// @Property ObjectId uint64 true "unique identifier of the uploaded object"
+// @Property ObjectKey string true "name of the uploaded object"
+// @Property StatusName string true "status name of the upload"
+// @Property SizeBytes uint64 true "size of the uploaded object in bytes"
+// @Property TakenAtSec int false "unix timestamp when the object was taken"
 type UploadFile struct {
 	ObjectId   uint64
 	ObjectKey  string

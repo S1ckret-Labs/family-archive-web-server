@@ -3,15 +3,28 @@ package tree
 import (
 	"database/sql"
 	"fmt"
-	"github.com/S1ckret-Labs/family-archive-web-server/helpers"
-	"github.com/gin-gonic/gin"
 	"net/http"
+
+	"github.com/gin-gonic/gin"
+
+	"github.com/S1ckret-Labs/family-archive-web-server/helpers"
 )
 
 type Feature struct {
 	Db *sql.DB
 }
 
+// API endpoint | retrieves the user's object tree with optional parameters
+// @Summary Get user's object tree
+// @Description Get the user's object tree with optional parameters
+// @ID get-tree
+// @Produce json
+// @Param id path uint64 true "User ID"
+// @Param root_object_id query uint64 false "Root Object ID"
+// @Param depth query uint64 false "Depth"
+// @Success 200
+// @Failure 400
+// @Router /api/v1/users/{id}/tree [get]
 func (f Feature) GetTree(c *gin.Context) {
 	// Validation
 	userId, err := helpers.ParamUint64(c, "id")
@@ -74,28 +87,36 @@ func (f Feature) GetTree(c *gin.Context) {
 			select descendant as object_id from Paths 
 			where ancestor = ? and path_length != 0 and path_length <= ?
 		);`, rootObjectId, depth)
-
 	if err != nil {
 		c.AbortWithError(http.StatusBadRequest, err)
 		return
 	}
 
+	// ObjectRow represents a row in the object database table
 	type ObjectRow struct {
-		ObjectId       uint64
-		ParentObjectId uint64
-		ObjectKey      string
-		SizeBytes      uint64
-		ObjectType     string
-		TakenAtSec     sql.NullInt64
-		ObjectsInside  sql.NullInt64
-		LockedUntilSec sql.NullInt64
+		ObjectId       uint64        `json:"objectId"                 example:"123"`
+		ParentObjectId uint64        `json:"parentObjectId"           example:"456"`
+		ObjectKey      string        `json:"objectKey"                example:"object_key"`
+		SizeBytes      uint64        `json:"sizeBytes"                example:"102400"`
+		ObjectType     string        `json:"objectType"               example:"image"`
+		TakenAtSec     sql.NullInt64 `json:"takenAtSec,omitempty"     example:"1630342017"`
+		ObjectsInside  sql.NullInt64 `json:"objectsInside,omitempty"  example:"2"`
+		LockedUntilSec sql.NullInt64 `json:"lockedUntilSec,omitempty" example:"1630343017"`
 	}
 
 	var objects []map[string]any
 	for query.Next() {
 		var r ObjectRow
-		err := query.Scan(&r.ObjectId, &r.ParentObjectId, &r.ObjectKey, &r.SizeBytes, &r.ObjectType, &r.TakenAtSec,
-			&r.ObjectsInside, &r.LockedUntilSec)
+		err := query.Scan(
+			&r.ObjectId,
+			&r.ParentObjectId,
+			&r.ObjectKey,
+			&r.SizeBytes,
+			&r.ObjectType,
+			&r.TakenAtSec,
+			&r.ObjectsInside,
+			&r.LockedUntilSec,
+		)
 		if err != nil {
 			c.AbortWithError(http.StatusInternalServerError, err)
 			return

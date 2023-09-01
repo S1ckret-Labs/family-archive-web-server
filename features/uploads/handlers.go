@@ -2,35 +2,49 @@ package uploads
 
 import (
 	"database/sql"
-	"github.com/S1ckret-Labs/family-archive-web-server/helpers"
-	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/service/s3"
-	"github.com/gin-gonic/gin"
-	"gopkg.in/guregu/null.v4"
 	"log"
 	"net/http"
 	"strconv"
 	"time"
+
+	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/service/s3"
+	"github.com/gin-gonic/gin"
+	"gopkg.in/guregu/null.v4"
+
+	"github.com/S1ckret-Labs/family-archive-web-server/helpers"
 )
 
+// feature represents a feature with a database connection S3 | client and bucket name
 type Feature struct {
 	Db         *sql.DB
 	S3         *s3.S3
 	BucketName string
 }
 
+// CreateUploadRequest represents the request structure for creating an upload
 type CreateUploadRequest struct {
-	ObjectKey  string
-	SizeBytes  uint64
-	TakenAtSec null.Int
+	ObjectKey  string   `json:"objectKey"            example:"example_object_key"`
+	SizeBytes  uint64   `json:"sizeBytes"            example:"102400"`
+	TakenAtSec null.Int `json:"takenAtSec,omitempty"`
 }
 
+// CreateUploadRequestResult represents the result structure after creating an upload request
 type CreateUploadRequestResult struct {
-	ObjectId  uint64
-	ObjectKey string
-	UploadUrl string
+	ObjectId  uint64 `json:"objectId"  example:"123"`
+	ObjectKey string `json:"objectKey" example:"example_object_key"`
+	UploadUrl string `json:"uploadUrl" example:"https://s3.example.com/uploads/uploaded_file"`
 }
 
+// @Summary Get user's upload requests
+// @Description Get the upload requests for a user
+// @ID get-upload-requests
+// @Produce json
+// @Param id path uint64 true "User ID"
+// @Success 200
+// @Failure 400
+// @Failure 500
+// @Router /api/v1/users/{id}/upload/requests [get]
 func (f Feature) GetUploadRequests(c *gin.Context) {
 	userId, err := helpers.ParamUint64(c, "id")
 	if err != nil {
@@ -46,6 +60,15 @@ func (f Feature) GetUploadRequests(c *gin.Context) {
 	c.JSON(http.StatusOK, uploadFiles)
 }
 
+// @Summary Create upload requests
+// @Description Create upload requests for a user
+// @ID create-upload-requests
+// @Accept json
+// @Produce json
+// @Param id path uint64 true "User ID"
+// @Success 200
+// @Failure 400
+// @Router /api/v1/users/{id}/upload/requests [post]
 func (f Feature) CreateUploadRequests(c *gin.Context) {
 	userId, err := helpers.ParamUint64(c, "id")
 	if err != nil {
@@ -84,13 +107,22 @@ func (f Feature) CreateUploadRequests(c *gin.Context) {
 	c.JSON(http.StatusOK, results)
 }
 
-func composeCreateUploadRequestResults(ids []uint64, keys []string, urls []string) []CreateUploadRequestResult {
+func composeCreateUploadRequestResults(
+	ids []uint64,
+	keys []string,
+	urls []string,
+) []CreateUploadRequestResult {
 	if len(ids) != len(keys) || len(keys) != len(urls) {
-		log.Panicf("Can't compose final result. Array sizes doesn't match! %d, %d, %d\n", len(ids), len(keys), len(urls))
+		log.Panicf(
+			"Can't compose final result. Array sizes doesn't match! %d, %d, %d\n",
+			len(ids),
+			len(keys),
+			len(urls),
+		)
 	}
 
 	var results []CreateUploadRequestResult
-	for i, _ := range ids {
+	for i := range ids {
 		results = append(results, CreateUploadRequestResult{
 			ObjectId:  ids[i],
 			ObjectKey: keys[i],
