@@ -74,3 +74,15 @@ func InsertUploadRequests(db *sql.DB, userId uint64, uploadRequests []CreateUplo
 	}
 	return ids, nil
 }
+
+func DeleteUploadRequests(db *sql.DB, userId uint64) error {
+	const deleteUploadRequestsSQL = `DELETE FROM UploadRequests WHERE user_id = ?`
+
+	_, err := db.Exec(deleteUploadRequestsSQL, userId)
+	if err != nil {
+		log.Println("Error while deleting upload requests:", err)
+		return err
+	}
+
+	return nil
+}

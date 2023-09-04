@@ -107,6 +107,32 @@ func (f Feature) CreateUploadRequests(c *gin.Context) {
 	c.JSON(http.StatusOK, results)
 }
 
+// @Summary Delete user's upload requests
+// @Description Delete the upload requests for a user
+// @ID delete-upload-requests
+// @Produce json
+// @Param id path uint64 true "User ID"
+// @Success 204
+// @Failure 400
+// @Failure 500
+// @Router /api/v1/users/{id}/upload/requests [delete]
+func (f Feature) DeleteUploadRequests(c *gin.Context) {
+	userId, err := helpers.ParamUint64(c, "id")
+	if err != nil {
+		c.AbortWithError(http.StatusBadRequest, err)
+		return
+	}
+
+	err = DeleteUploadRequests(f.Db, userId)
+	if err != nil {
+		log.Println("Error while deleting upload requests from the database!")
+		c.AbortWithError(http.StatusInternalServerError, err)
+		return
+	}
+
+	c.Status(http.StatusNoContent)
+}
+
 func composeCreateUploadRequestResults(
 	ids []uint64,
 	keys []string,
