@@ -103,6 +103,34 @@
                         "description": "Bad Request"
                     }
                 }
+            },
+            "delete": {
+                "description": "Delete the upload requests for a user",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Delete user's upload requests",
+                "operationId": "delete-upload-requests",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "User ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
             }
         },
         "/health": {

@@ -34,6 +34,25 @@ paths:
           description: Bad Request
       summary: Get user's object tree
   /api/v1/users/{id}/upload/requests:
+    delete:
+      description: Delete the upload requests for a user
+      operationId: delete-upload-requests
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+        "500":
+          description: Internal Server Error
+      summary: Delete user's upload requests
     get:
       description: Get the upload requests for a user
       operationId: get-upload-requests
