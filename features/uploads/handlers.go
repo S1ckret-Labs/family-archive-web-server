@@ -31,9 +31,9 @@ type CreateUploadRequest struct {
 
 // CreateUploadRequestResult represents the result structure after creating an upload request
 type CreateUploadRequestResult struct {
-	ObjectId  uint64 `json:"objectId"  example:"123"`
-	ObjectKey string `json:"objectKey" example:"example_object_key"`
-	UploadUrl string `json:"uploadUrl" example:"https://s3.example.com/uploads/uploaded_file"`
+	ObjectId  uint64 `json:"ObjectId"  example:"123"`
+	ObjectKey string `json:"ObjectKey" example:"example_object_key"`
+	UploadUrl string `json:"UploadUrl" example:"https://s3.example.com/uploads/uploaded_file"`
 }
 
 // @Summary Get user's upload requests
