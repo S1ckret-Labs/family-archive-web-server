@@ -24,8 +24,8 @@ type Feature struct {
 
 // CreateUploadRequest represents the request structure for creating an upload
 type CreateUploadRequest struct {
-	ObjectKey  string   `json:"ObjectKey"            example:"example_object_key"`
-	SizeBytes  uint64   `json:"SizeBytes"            example:"102400"`
+	ObjectKey  string   `json:"ObjectKey"  example:"example_object_key"`
+	SizeBytes  uint64   `json:"SizeBytes"  example:"102400"`
 	TakenAtSec null.Int `json:"TakenAtSec"`
 }
 
