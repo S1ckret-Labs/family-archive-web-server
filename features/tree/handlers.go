@@ -14,7 +14,6 @@ type Feature struct {
 	Db *sql.DB
 }
 
-// API endpoint | retrieves the user's object tree with optional parameters
 // @Summary Get user's object tree
 // @Description Get the user's object tree with optional parameters
 // @ID get-tree
@@ -94,14 +93,14 @@ func (f Feature) GetTree(c *gin.Context) {
 
 	// ObjectRow represents a row in the object database table
 	type ObjectRow struct {
-		ObjectId       uint64        `json:"objectId"                 example:"123"`
-		ParentObjectId uint64        `json:"parentObjectId"           example:"456"`
-		ObjectKey      string        `json:"objectKey"                example:"object_key"`
-		SizeBytes      uint64        `json:"sizeBytes"                example:"102400"`
-		ObjectType     string        `json:"objectType"               example:"image"`
-		TakenAtSec     sql.NullInt64 `json:"takenAtSec,omitempty"     example:"1630342017"`
-		ObjectsInside  sql.NullInt64 `json:"objectsInside,omitempty"  example:"2"`
-		LockedUntilSec sql.NullInt64 `json:"lockedUntilSec,omitempty" example:"1630343017"`
+		ObjectId       uint64        `json:"objectId"       example:"123"`
+		ParentObjectId uint64        `json:"parentObjectId" example:"456"`
+		ObjectKey      string        `json:"objectKey"      example:"object_key"`
+		SizeBytes      uint64        `json:"sizeBytes"      example:"102400"`
+		ObjectType     string        `json:"objectType"     example:"image"`
+		TakenAtSec     sql.NullInt64 `json:"takenAtSec"     example:"1630342017"`
+		ObjectsInside  sql.NullInt64 `json:"objectsInside"  example:"2"`
+		LockedUntilSec sql.NullInt64 `json:"lockedUntilSec" example:"1630343017"`
 	}
 
 	var objects []map[string]any

@@ -6,7 +6,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// API endpoint | retrieves the health status of the application
 // @Summary Get health status
 // @Description Get the health status of the application
 // @ID get-health
