@@ -21,8 +21,9 @@ type Feature struct {
 // @Param id path uint64 true "User ID"
 // @Param root_object_id query uint64 false "Root Object ID"
 // @Param depth query uint64 false "Depth"
-// @Success 200
-// @Failure 400
+// @Success 200 "Successful response"
+// @Failure 400 "Bad Request"
+// @Failure 500 "Internal Server Error"
 // @Router /api/v1/users/{id}/tree [get]
 func (f Feature) GetTree(c *gin.Context) {
 	// Validation
