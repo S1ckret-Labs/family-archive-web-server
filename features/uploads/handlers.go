@@ -113,9 +113,9 @@ func (f Feature) CreateUploadRequests(c *gin.Context) {
 // @ID delete-upload-requests
 // @Produce json
 // @Param id path uint64 true "User ID"
-// @Success 204
-// @Failure 400
-// @Failure 500
+// @Success 204 "No Content"
+// @Failure 400 "Bad Request"
+// @Failure 500 "Internal Server Error"
 // @Router /api/v1/users/{id}/upload/requests [delete]
 func (f Feature) DeleteUploadRequests(c *gin.Context) {
 	userId, err := helpers.ParamUint64(c, "id")
