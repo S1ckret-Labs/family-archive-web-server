@@ -41,9 +41,9 @@ type CreateUploadRequestResult struct {
 // @ID get-upload-requests
 // @Produce json
 // @Param id path uint64 true "User ID"
-// @Success 200 {array} CreateUploadRequest "Successful response"
-// @Failure 400 {object} ErrorResponse "Bad Request"
-// @Failure 500 {object} ErrorResponse "Internal Server Error"
+// @Success 200 "Successful response"
+// @Failure 400 "Bad Request"
+// @Failure 500 "Internal Server Error"
 // @Router /api/v1/users/{id}/upload/requests [get]
 func (f Feature) GetUploadRequests(c *gin.Context) {
 	userId, err := helpers.ParamUint64(c, "id")
@@ -66,9 +66,9 @@ func (f Feature) GetUploadRequests(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Param id path uint64 true "User ID"
-// @Success 200 {array} CreateUploadRequestResult "Successful response"
-// @Failure 400 {object} ErrorResponse "Bad Request"
-// @Failure 500 {object} ErrorResponse "Internal Server Error"
+// @Success 200 "Successful response"
+// @Failure 400 "Bad Request"
+// @Failure 500 "Internal Server Error"
 // @Router /api/v1/users/{id}/upload/requests [post]
 func (f Feature) CreateUploadRequests(c *gin.Context) {
 	userId, err := helpers.ParamUint64(c, "id")
