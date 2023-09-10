@@ -24,16 +24,16 @@ type Feature struct {
 
 // CreateUploadRequest represents the request structure for creating an upload
 type CreateUploadRequest struct {
-	ObjectKey  string   `json:"objectKey"            example:"example_object_key"`
-	SizeBytes  uint64   `json:"sizeBytes"            example:"102400"`
-	TakenAtSec null.Int `json:"takenAtSec,omitempty"`
+	ObjectKey  string   `json:"ObjectKey"  example:"example_object_key"`
+	SizeBytes  uint64   `json:"SizeBytes"  example:"102400"`
+	TakenAtSec null.Int `json:"TakenAtSec"`
 }
 
 // CreateUploadRequestResult represents the result structure after creating an upload request
 type CreateUploadRequestResult struct {
-	ObjectId  uint64 `json:"objectId"  example:"123"`
-	ObjectKey string `json:"objectKey" example:"example_object_key"`
-	UploadUrl string `json:"uploadUrl" example:"https://s3.example.com/uploads/uploaded_file"`
+	ObjectId  uint64 `json:"ObjectId"  example:"123"`
+	ObjectKey string `json:"ObjectKey" example:"example_object_key"`
+	UploadUrl string `json:"UploadUrl" example:"https://s3.example.com/uploads/uploaded_file"`
 }
 
 // @Summary Get user's upload requests
@@ -41,9 +41,9 @@ type CreateUploadRequestResult struct {
 // @ID get-upload-requests
 // @Produce json
 // @Param id path uint64 true "User ID"
-// @Success 200
-// @Failure 400
-// @Failure 500
+// @Success 200 "Successful response"
+// @Failure 400 "Bad Request"
+// @Failure 500 "Internal Server Error"
 // @Router /api/v1/users/{id}/upload/requests [get]
 func (f Feature) GetUploadRequests(c *gin.Context) {
 	userId, err := helpers.ParamUint64(c, "id")
@@ -66,8 +66,9 @@ func (f Feature) GetUploadRequests(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Param id path uint64 true "User ID"
-// @Success 200
-// @Failure 400
+// @Success 200 "Successful response"
+// @Failure 400 "Bad Request"
+// @Failure 500 "Internal Server Error"
 // @Router /api/v1/users/{id}/upload/requests [post]
 func (f Feature) CreateUploadRequests(c *gin.Context) {
 	userId, err := helpers.ParamUint64(c, "id")

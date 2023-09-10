@@ -14,7 +14,6 @@ type Feature struct {
 	Db *sql.DB
 }
 
-// API endpoint | retrieves the user's object tree with optional parameters
 // @Summary Get user's object tree
 // @Description Get the user's object tree with optional parameters
 // @ID get-tree
@@ -22,8 +21,9 @@ type Feature struct {
 // @Param id path uint64 true "User ID"
 // @Param root_object_id query uint64 false "Root Object ID"
 // @Param depth query uint64 false "Depth"
-// @Success 200
-// @Failure 400
+// @Success 200 "Successful response"
+// @Failure 400 "Bad Request"
+// @Failure 500 "Internal Server Error"
 // @Router /api/v1/users/{id}/tree [get]
 func (f Feature) GetTree(c *gin.Context) {
 	// Validation
@@ -94,14 +94,14 @@ func (f Feature) GetTree(c *gin.Context) {
 
 	// ObjectRow represents a row in the object database table
 	type ObjectRow struct {
-		ObjectId       uint64        `json:"objectId"                 example:"123"`
-		ParentObjectId uint64        `json:"parentObjectId"           example:"456"`
-		ObjectKey      string        `json:"objectKey"                example:"object_key"`
-		SizeBytes      uint64        `json:"sizeBytes"                example:"102400"`
-		ObjectType     string        `json:"objectType"               example:"image"`
-		TakenAtSec     sql.NullInt64 `json:"takenAtSec,omitempty"     example:"1630342017"`
-		ObjectsInside  sql.NullInt64 `json:"objectsInside,omitempty"  example:"2"`
-		LockedUntilSec sql.NullInt64 `json:"lockedUntilSec,omitempty" example:"1630343017"`
+		ObjectId       uint64        `json:"ObjectId"       example:"123"`
+		ParentObjectId uint64        `json:"ParentObjectId" example:"456"`
+		ObjectKey      string        `json:"ObjectKey"      example:"object_key"`
+		SizeBytes      uint64        `json:"SizeBytes"      example:"102400"`
+		ObjectType     string        `json:"ObjectType"     example:"image"`
+		TakenAtSec     sql.NullInt64 `json:"TakenAtSec"     example:"1630342017"`
+		ObjectsInside  sql.NullInt64 `json:"ObjectsInside"  example:"2"`
+		LockedUntilSec sql.NullInt64 `json:"LockedUntilSec" example:"1630343017"`
 	}
 
 	var objects []map[string]any
