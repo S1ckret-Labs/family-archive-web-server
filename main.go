@@ -3,10 +3,8 @@ package main
 import (
 	"context"
 	"database/sql"
-	"github.com/S1ckret-Labs/family-archive-web-server/features/health"
-	"github.com/S1ckret-Labs/family-archive-web-server/features/tree"
-	"github.com/S1ckret-Labs/family-archive-web-server/features/uploads"
-	"github.com/S1ckret-Labs/family-archive-web-server/helpers"
+	"os"
+
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/aws/aws-sdk-go/aws/session"
@@ -16,7 +14,10 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 	cors "github.com/rs/cors/wrapper/gin"
 	"github.com/spf13/viper"
-	"os"
+	"github.com/S1ckret-Labs/family-archive-web-server/features/health"
+	"github.com/S1ckret-Labs/family-archive-web-server/features/tree"
+	"github.com/S1ckret-Labs/family-archive-web-server/features/uploads"
+	"github.com/S1ckret-Labs/family-archive-web-server/helpers"
 )
 
 var ginLambda *ginadapter.GinLambda
@@ -62,7 +63,10 @@ func setupRouter() *gin.Engine {
 	return r
 }
 
-func Handler(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+func Handler(
+	ctx context.Context,
+	request events.APIGatewayProxyRequest,
+) (events.APIGatewayProxyResponse, error) {
 	return ginLambda.ProxyWithContext(ctx, request)
 }
 
