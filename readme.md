@@ -27,8 +27,12 @@ set -o allexport
 5. Build the server
 
 ```shell
+go install github.com/swaggo/swag/cmd/swag@latest
+swag init --parseDependency --parseInternal
+# Remove LeftDelim and RightDelim from docs/docs.go
 go build
 ```
+
 
 6. Run the server
 
