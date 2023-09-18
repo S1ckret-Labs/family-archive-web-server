@@ -108,6 +108,27 @@ func (f Feature) CreateUploadRequests(c *gin.Context) {
 	c.JSON(http.StatusOK, results)
 }
 
+func (f Feature) DeleteUploadRequests(c *gin.Context) {
+	userId, err := helpers.ParamUint64(c, "id")
+	if err != nil {
+		c.AbortWithError(http.StatusBadRequest, err)
+		return
+	}
+
+	var requestIDs []uint64
+	if err := c.BindJSON(&requestIDs); err != nil {
+		c.AbortWithError(http.StatusBadRequest, err)
+		return
+	}
+
+	err = DeleteUploadRequestsWithS3Objects(f.Db, f.S3, f.BucketName, userId, requestIDs)
+	if err != nil {
+		c.AbortWithError(http.StatusInternalServerError, err)
+		return
+	}
+	c.Status(http.StatusNoContent)
+}
+
 func composeCreateUploadRequestResults(
 	ids []uint64,
 	keys []string,
