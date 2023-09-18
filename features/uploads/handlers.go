@@ -108,6 +108,16 @@ func (f Feature) CreateUploadRequests(c *gin.Context) {
 	c.JSON(http.StatusOK, results)
 }
 
+// @Summary Delete user's upload requests
+// @Description Delete the upload requests for a user
+// @ID delete-upload-requests
+// @Produce json
+// @Param id path uint64 true "User ID"
+// @Param requestIDs body []uint64 true "Array of request IDs to delete"
+// @Success 204 "No Content"
+// @Failure 400 "Bad Request"
+// @Failure 500 "Internal Server Error"
+// @Router /api/v1/users/{id}/upload/requests [delete]
 func (f Feature) DeleteUploadRequests(c *gin.Context) {
 	userId, err := helpers.ParamUint64(c, "id")
 	if err != nil {
@@ -153,6 +163,7 @@ func composeCreateUploadRequestResults(
 	}
 	return results
 }
+
 
 func (f Feature) createS3SignedUrls(prefix string, fileNames []string) ([]string, error) {
 	urls := make([]string, 0, 20) // 20 is minimum user upload size
