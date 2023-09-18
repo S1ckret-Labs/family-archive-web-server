@@ -4,6 +4,9 @@ import (
 	"database/sql"
 	"gopkg.in/guregu/null.v4"
 	"log"
+	
+	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/service/s3"
 )
 
 // @Model UploadFile
@@ -73,4 +76,46 @@ func InsertUploadRequests(db *sql.DB, userId uint64, uploadRequests []CreateUplo
 		log.Panicln(err)
 	}
 	return ids, nil
+}
+
+func DeleteUploadRequestsWithS3Objects(db *sql.DB, s3Client *s3.S3, bucketName string, userId uint64, requestIDs []uint64) error {
+	// create a transaction to ensure all deletions are atomic
+	tx, err := db.Begin()
+	if err != nil {
+		return err
+	}
+	defer tx.Rollback()
+
+	// delete the upload requests from the database in one sql query
+	_, err = tx.Exec("DELETE FROM UploadRequests WHERE user_id = $1 AND id = ANY($2)", userId, requestIDs)
+	if err != nil {
+		return err
+	}
+
+	// also delete associated S3 objects
+	for _, requestID := range requestIDs {
+		// retrieve the object key from the database
+		var objectKey string
+		err := tx.QueryRow("SELECT object_key FROM UploadRequests WHERE id = $1", requestID).Scan(&objectKey)
+		if err != nil {
+			return err
+		}
+
+		// delete the S3 object
+		_, err = s3Client.DeleteObject(&s3.DeleteObjectInput{
+			Bucket: aws.String(bucketName),
+			Key:    aws.String(objectKey),
+		})
+		if err != nil {
+			return err
+		}
+	}
+
+	// and commit the transaction
+	err = tx.Commit()
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
