@@ -15,24 +15,36 @@ import (
 	"github.com/S1ckret-Labs/family-archive-web-server/helpers"
 )
 
+// feature represents a feature with a database connection S3 | client and bucket name
 type Feature struct {
 	Db         *sql.DB
 	S3         *s3.S3
 	BucketName string
 }
 
+// CreateUploadRequest represents the request structure for creating an upload
 type CreateUploadRequest struct {
-	ObjectKey  string
-	SizeBytes  uint64
-	TakenAtSec null.Int
+	ObjectKey  string   `json:"ObjectKey"  example:"example_object_key"`
+	SizeBytes  uint64   `json:"SizeBytes"  example:"102400"`
+	TakenAtSec null.Int `json:"TakenAtSec"`
 }
 
+// CreateUploadRequestResult represents the result structure after creating an upload request
 type CreateUploadRequestResult struct {
-	ObjectId  uint64
-	ObjectKey string
-	UploadUrl string
+	ObjectId  uint64 `json:"ObjectId"  example:"123"`
+	ObjectKey string `json:"ObjectKey" example:"example_object_key"`
+	UploadUrl string `json:"UploadUrl" example:"https://s3.example.com/uploads/uploaded_file"`
 }
 
+// @Summary Get user's upload requests
+// @Description Get the upload requests for a user
+// @ID get-upload-requests
+// @Produce json
+// @Param id path uint64 true "User ID"
+// @Success 200
+// @Failure 400
+// @Failure 500
+// @Router /api/v1/users/{id}/upload/requests [get]
 func (f Feature) GetUploadRequests(c *gin.Context) {
 	userId, err := helpers.ParamUint64(c, "id")
 	if err != nil {
@@ -48,6 +60,15 @@ func (f Feature) GetUploadRequests(c *gin.Context) {
 	c.JSON(http.StatusOK, uploadFiles)
 }
 
+// @Summary Create upload requests
+// @Description Create upload requests for a user
+// @ID create-upload-requests
+// @Accept json
+// @Produce json
+// @Param id path uint64 true "User ID"
+// @Success 200
+// @Failure 400
+// @Router /api/v1/users/{id}/upload/requests [post]
 func (f Feature) CreateUploadRequests(c *gin.Context) {
 	userId, err := helpers.ParamUint64(c, "id")
 	if err != nil {
