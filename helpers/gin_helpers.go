@@ -2,8 +2,9 @@ package helpers
 
 import (
 	"fmt"
-	"github.com/gin-gonic/gin"
 	"strconv"
+
+	"github.com/gin-gonic/gin"
 )
 
 func ParamUint64(c *gin.Context, name string) (uint64, error) {

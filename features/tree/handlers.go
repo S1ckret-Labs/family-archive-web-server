@@ -3,9 +3,11 @@ package tree
 import (
 	"database/sql"
 	"fmt"
-	"github.com/S1ckret-Labs/family-archive-web-server/helpers"
-	"github.com/gin-gonic/gin"
 	"net/http"
+
+	"github.com/gin-gonic/gin"
+
+	"github.com/S1ckret-Labs/family-archive-web-server/helpers"
 )
 
 type Feature struct {
@@ -74,7 +76,6 @@ func (f Feature) GetTree(c *gin.Context) {
 			select descendant as object_id from Paths 
 			where ancestor = ? and path_length != 0 and path_length <= ?
 		);`, rootObjectId, depth)
-
 	if err != nil {
 		c.AbortWithError(http.StatusBadRequest, err)
 		return
@@ -94,8 +95,16 @@ func (f Feature) GetTree(c *gin.Context) {
 	var objects []map[string]any
 	for query.Next() {
 		var r ObjectRow
-		err := query.Scan(&r.ObjectId, &r.ParentObjectId, &r.ObjectKey, &r.SizeBytes, &r.ObjectType, &r.TakenAtSec,
-			&r.ObjectsInside, &r.LockedUntilSec)
+		err := query.Scan(
+			&r.ObjectId,
+			&r.ParentObjectId,
+			&r.ObjectKey,
+			&r.SizeBytes,
+			&r.ObjectType,
+			&r.TakenAtSec,
+			&r.ObjectsInside,
+			&r.LockedUntilSec,
+		)
 		if err != nil {
 			c.AbortWithError(http.StatusInternalServerError, err)
 			return

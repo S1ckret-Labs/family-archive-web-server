@@ -2,15 +2,17 @@ package uploads
 
 import (
 	"database/sql"
-	"github.com/S1ckret-Labs/family-archive-web-server/helpers"
-	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/service/s3"
-	"github.com/gin-gonic/gin"
-	"gopkg.in/guregu/null.v4"
 	"log"
 	"net/http"
 	"strconv"
 	"time"
+
+	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/service/s3"
+	"github.com/gin-gonic/gin"
+	"gopkg.in/guregu/null.v4"
+
+	"github.com/S1ckret-Labs/family-archive-web-server/helpers"
 )
 
 type Feature struct {
@@ -84,13 +86,22 @@ func (f Feature) CreateUploadRequests(c *gin.Context) {
 	c.JSON(http.StatusOK, results)
 }
 
-func composeCreateUploadRequestResults(ids []uint64, keys []string, urls []string) []CreateUploadRequestResult {
+func composeCreateUploadRequestResults(
+	ids []uint64,
+	keys []string,
+	urls []string,
+) []CreateUploadRequestResult {
 	if len(ids) != len(keys) || len(keys) != len(urls) {
-		log.Panicf("Can't compose final result. Array sizes doesn't match! %d, %d, %d\n", len(ids), len(keys), len(urls))
+		log.Panicf(
+			"Can't compose final result. Array sizes doesn't match! %d, %d, %d\n",
+			len(ids),
+			len(keys),
+			len(urls),
+		)
 	}
 
 	var results []CreateUploadRequestResult
-	for i, _ := range ids {
+	for i := range ids {
 		results = append(results, CreateUploadRequestResult{
 			ObjectId:  ids[i],
 			ObjectKey: keys[i],
