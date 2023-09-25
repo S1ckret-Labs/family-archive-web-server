@@ -57,6 +57,7 @@ func main() {
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	r.GET("/api/v1/users/:id/upload/requests", uploadsFeature.GetUploadRequests)
 	r.POST("/api/v1/users/:id/upload/requests", uploadsFeature.CreateUploadRequests)
+	r.DELETE("/api/v1/users/:id/upload/requests", uploadsFeature.DeleteUploadRequests)
 
 	r.GET("/api/v1/users/:id/tree", treeFeature.GetTree)
 	Run(r)

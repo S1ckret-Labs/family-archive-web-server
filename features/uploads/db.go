@@ -4,6 +4,9 @@ import (
 	"database/sql"
 	"gopkg.in/guregu/null.v4"
 	"log"
+	
+	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/service/s3"
 )
 
 // @Model UploadFile
@@ -73,4 +76,48 @@ func InsertUploadRequests(db *sql.DB, userId uint64, uploadRequests []CreateUplo
 		log.Panicln(err)
 	}
 	return ids, nil
+}
+
+func DeleteUploadRequestsWithS3Objects(db *sql.DB, s3Client *s3.S3, bucketName string, userId uint64, requestIDs []uint64) error {
+  tx, err := db.Begin()
+  if err != nil {
+    return err
+  }
+  defer tx.Rollback()
+
+  var objectKeys []string
+  rows, err := tx.Query("SELECT object_key FROM UploadRequests WHERE user_id = $1 AND id = ANY($2)", userId, requestIDs)
+  if err != nil {
+    return err
+  }
+  defer rows.Close()
+  for rows.Next() {
+    var objectKey string
+    if err := rows.Scan(&objectKey); err != nil {
+      return err
+    }
+    objectKeys = append(objectKeys, objectKey)
+  }
+
+  _, err = tx.Exec("DELETE FROM UploadRequests WHERE user_id = $1 AND id = ANY($2)", userId, requestIDs)
+  if err != nil {
+    return err
+  }
+
+  err = tx.Commit()
+  if err != nil {
+    return err
+  }
+
+  for _, objectKey := range objectKeys {
+    _, err = s3Client.DeleteObject(&s3.DeleteObjectInput{
+      Bucket: aws.String(bucketName),
+      Key:    aws.String(objectKey),
+    })
+    if err != nil {
+      return err
+    }
+  }
+	
+	return nil
 }
